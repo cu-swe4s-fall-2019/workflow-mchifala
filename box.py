@@ -1,14 +1,27 @@
 import argparse
 import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+matplotlib.use('Agg')  # noqa: E402
+import matplotlib.pyplot as plt  # noqa: E402
+
 
 def make_boxplot(tissues, genes, tissue_counts, output_file):
+    """
+    This function makes a series of boxplots for gene expression
+    distribution across a set of genes for a set of tissue groups
+
+    Parameters:
+    - tissues(list): The tissues of interest
+    - genes(list): The genes of interest
+    - tissue_counts(dict): The gene counts for each gene for each
+    tissue group
+    - output_file(str): The .png file for the boxplot
+
+    """
     width = len(genes)
     height = len(tissues)*2
-    fig = plt.figure(figsize=(width,height), dpi=300)
+    fig = plt.figure(figsize=(width, height), dpi=300)
     for t, tissue in enumerate(tissues):
-        ax = fig.add_subplot(len(tissues), 1,1+t)
+        ax = fig.add_subplot(len(tissues), 1, 1+t)
         ax.boxplot(tissue_counts[tissue])
         ax.set_xticklabels(genes)
         ax.set_title(tissue)
@@ -18,9 +31,21 @@ def make_boxplot(tissues, genes, tissue_counts, output_file):
     plt.tight_layout()
     plt.savefig(output_file, bbox_inches='tight')
 
+
 def main(tissues, genes, output_file):
-    tissue_counts = {tissue:[] for tissue in tissues}
-    
+    """
+    This main function uses the data from the generated .txt files
+    of gene counts and tissue samples to generate a box plot
+    of gene expression distributions.
+
+    Parameters:
+    - tissues(str): The tissues of interest
+    - genes(str): The genes of interest
+    - output_file(str): The .png file for the boxplot
+
+    """
+    tissue_counts = {tissue: [] for tissue in tissues}
+
     for gene in genes:
 
         sample_count_dict = {}
@@ -29,7 +54,7 @@ def main(tissues, genes, output_file):
             line = line.rstrip().split()
             sample_count_dict[line[0]] = int(line[1])
         file.close()
-        
+
         for tissue in tissues:
             counts = []
             file = open(tissue + '_samples.txt')
@@ -40,9 +65,10 @@ def main(tissues, genes, output_file):
             file.close()
 
             tissue_counts[tissue].append(counts)
-    
+
     make_boxplot(tissues, genes, tissue_counts, output_file)
-    
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Plot gene expression")
 

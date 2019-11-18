@@ -1,27 +1,52 @@
-import sys
+def main(file, tissue_group, output_file):
+    """
+    This main function extracts the samples of a particular
+    tissue group and places into a .txt file
 
-file_name = sys.argv[1]
-tissue_name = sys.argv[2]
-out_file_name = sys.argv[3]
+    Parameters:
+    - file(str): The file path to the sample attribute file
+    - tissue_group(str): The tissue group of interest. Ex. Blood
+    - output_file(str): The .txt file of the results
 
-o = open(out_file_name, 'w')
+    """
+    out = open(output_file, 'w')
 
-header = None
-sampid_col = -1
-smts_col = -1
+    header = None
+    sampid_col = -1
+    smts_col = -1
+
+    file = open(file, 'rt')
+
+    for line in file:
+        line = line.rstrip().split('\t')
+        if header is None:
+            header = line
+            sampid_col = line.index('SAMPID')
+            smts_col = line.index('SMTS')
+            continue
+
+        if line[smts_col] == tissue_group:
+            out.write(line[sampid_col] + '\n')
+
+    file.close()
+    out.close()
 
 
-f = open(file_name)
-for l in f:
-    A = l.rstrip().split('\t')
-    if header is None:
-        header = A
-        sampid_col = A.index('SAMPID')
-        smts_col = A.index('SMTS')
-        continue
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Get tissue samples")
 
-    if A[smts_col] == tissue_name:
-        o.write(A[sampid_col] + '\n')
-        
-f.close()
-o.close()
+    parser.add_argument('file',
+                        type=str,
+                        help="Sample attribute file")
+
+    parser.add_argument('tissue_group',
+                        type=str,
+                        help="Tissue group (SMTS)")
+
+    parser.add_argument("output_file",
+                        type=str,
+                        help="File with sample ids for tissue group")
+
+    args = parser.parse_args()
+
+    main(args.file, args.tissue_group, args.output_file)
