@@ -13,10 +13,9 @@ before_install:
     - conda install -y matplotlib
     - conda install -y numpy 
     - git clone https://github.com/snakemake/snakemake.git
-    - pwd
     - cd snakemake 
     - python setup.py install
-    - 
+    - cd ..
 script:
     - pycodestyle box.py
     - pycodestyle get_gene_counts.py
