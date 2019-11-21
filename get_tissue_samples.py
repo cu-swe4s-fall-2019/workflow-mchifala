@@ -1,3 +1,5 @@
+import argparse
+
 def main(file, tissue_group, output_file):
     """
     This main function extracts the samples of a particular

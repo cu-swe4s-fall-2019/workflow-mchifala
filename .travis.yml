@@ -20,4 +20,7 @@ script:
     - pycodestyle box.py
     - pycodestyle get_gene_counts.py
     - pycodestyle get_tissue_samples.py
+    - pycodestyle test_plots.py
+    - python test_plots.py
     - snakemake
+    - bash functional_test.sh
